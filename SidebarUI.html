@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merge Studio</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #1a73e8;
+      --primary-hover: #1557b0;
+      --success-bg: #ecfdf5;
+      --success-text: #065f46;
+      --success-border: #a7f3d0;
+      --error-bg: #fef2f2;
+      --error-text: #991b1b;
+      --error-border: #fecaca;
+      --info-bg: #eff6ff;
+      --info-text: #1e40af;
+      --info-border: #bfdbfe;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.4;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin: 0 0 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sub-box {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #f8fafc;
+      padding: 9px;
+      margin-top: 8px;
+    }
+
+    .sub-box-title {
+      font-size: 11.5px;
+      font-weight: 600;
+      margin: 0 0 6px 0;
+      color: var(--text);
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: var(--text);
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 7px 9px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-family: inherit;
+      color: var(--text);
+      background: #fff;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.15);
+    }
+
+    textarea {
+      min-height: 64px;
+      resize: vertical;
+    }
+
+    .row-inline {
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .row-inline > *:first-child {
+      flex: 1;
+    }
+
+    button {
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 6px;
+      padding: 7px 11px;
+      font-size: 12.5px;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    button:hover:not(:disabled) {
+      background: #f1f5f9;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    button.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    button.primary:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+
+    button.danger {
+      color: #b91c1c;
+      border-color: #fecaca;
+      background: #fff;
+    }
+
+    button.danger:hover:not(:disabled) {
+      background: #fef2f2;
+    }
+
+    button.small {
+      padding: 4px 8px;
+      font-size: 11.5px;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-full {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .mapping-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .tag-pill {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11.5px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      padding: 5px 7px;
+      border-radius: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mapping-row select {
+      margin-bottom: 0;
+    }
+
+    .branch-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #f8fafc;
+      padding: 9px;
+      margin-bottom: 8px;
+    }
+
+    .branch-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      gap: 6px;
+    }
+
+    .branch-header input {
+      margin-bottom: 0;
+      font-weight: 600;
+    }
+
+    .cond-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 4px 0 8px 0;
+      font-size: 12.5px;
+      cursor: pointer;
+    }
+
+    .checkbox-row input {
+      margin: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 11.5px;
+      margin: 2px 0 6px 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .status-box {
+      padding: 9px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-top: 10px;
+      border: 1px solid transparent;
+      word-break: break-word;
+    }
+
+    .status-info {
+      background: var(--info-bg);
+      color: var(--info-text);
+      border-color: var(--info-border);
+    }
+
+    .status-success {
+      background: var(--success-bg);
+      color: var(--success-text);
+      border-color: var(--success-border);
+    }
+
+    .status-error {
+      background: var(--error-bg);
+      color: var(--error-text);
+      border-color: var(--error-border);
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Merge Studio</h1>
+    <button id="btnReload" type="button" onclick="loadContext()">Reload Context</button>
+  </div>
+
+  <!-- 1. Source Sheet -->
+  <div class="card">
+    <div class="card-title">1. Source Sheet</div>
+    <label for="sheetSelect">Sheet Tab</label>
+    <select id="sheetSelect" onchange="onSheetChange()"></select>
+    <div id="headersHint" class="muted"></div>
+  </div>
+
+  <!-- 2. Template & Destination -->
+  <div class="card">
+    <div class="card-title">2. Default Template &amp; Destination</div>
+    <label for="templateDocId">Template Google Doc ID or URL</label>
+    <div class="row-inline">
+      <input type="text" id="templateDocId" placeholder="Paste Doc ID or URL" />
+      <button id="btnScanTags" type="button" onclick="scanTags()">Scan Tags</button>
+    </div>
+    <div id="templateInfo" class="muted"></div>
+
+    <label for="destinationFolderId">Destination Drive Folder ID or URL</label>
+    <input type="text" id="destinationFolderId" placeholder="Paste Folder ID or URL" />
+  </div>
+
+  <!-- 3. Tag-to-Column Mappings -->
+  <div class="card">
+    <div class="card-title">3. Tag-to-Column Mapping</div>
+    <div id="mappingsContainer">
+      <div class="muted">Click "Scan Tags" above to detect &lt;&lt;Tag&gt;&gt; placeholders.</div>
+    </div>
+  </div>
+
+  <!-- 4. Output Settings -->
+  <div class="card">
+    <div class="card-title">4. Output Settings</div>
+    <label for="filenamePattern">Output Filename Template</label>
+    <input type="text" id="filenamePattern" placeholder="e.g. <<Name>> - Application" />
+
+    <label for="outputFormat">Output Format</label>
+    <select id="outputFormat">
+      <option value="PDF">PDF</option>
+      <option value="DOC">Google Doc</option>
+      <option value="BOTH">Both (PDF + Google Doc)</option>
+    </select>
+  </div>
+
+  <!-- 5. Branching Logic & Value-Based Templates -->
+  <div class="card">
+    <div class="card-title">
+      <span>5. Branching Logic</span>
+      <button type="button" class="small" onclick="addBranchRule()">+ Add Branch</button>
+    </div>
+
+    <label class="checkbox-row">
+      <input type="checkbox" id="condEnabled" onchange="toggleConditionPanel()" />
+      <span>Only merge rows matching a condition</span>
+    </label>
+
+    <div id="conditionPanel" class="hidden">
+      <div class="cond-grid">
+        <select id="condColumn"></select>
+        <select id="condOperator">
+          <option value="equals">equals</option>
+          <option value="not_equals">not equals</option>
+          <option value="contains">contains</option>
+          <option value="not_contains">not contains</option>
+          <option value="greater_than">greater than (&gt;)</option>
+          <option value="less_than">less than (&lt;)</option>
+          <option value="is_empty">is empty</option>
+          <option value="is_not_empty">is not empty</option>
+        </select>
+      </div>
+      <input type="text" id="condValue" placeholder="Comparison value (e.g. Complete)" />
+    </div>
+
+    <div class="muted">
+      Value-based branches (first match wins) can override the template Doc, folder, or email template:
+    </div>
+    <div id="branchesContainer"></div>
+  </div>
+
+  <!-- 6. Default Email Settings -->
+  <div class="card">
+    <div class="card-title">6. Immediate Merge Email (Optional)</div>
+    <label class="checkbox-row">
+      <input type="checkbox" id="emailEnabled" onchange="toggleEmailPanel()" />
+      <span>Send email immediately when row merges</span>
+    </label>
+
+    <div id="emailPanel" class="hidden">
+      <label for="emailRecipient">Recipient (Column Name, &lt;&lt;Tag&gt;&gt;, or Email)</label>
+      <input type="text" id="emailRecipient" placeholder="e.g. Email or <<Email>>" />
+
+      <label for="emailSubject">Default Subject Template</label>
+      <input type="text" id="emailSubject" placeholder="e.g. Application Received, <<Name>>" />
+
+      <label for="emailBody">Default Body Template</label>
+      <textarea id="emailBody" placeholder="Hello <<Name>>,&#10;&#10;Your file is attached. Link: <<Merged File URL>>"></textarea>
+    </div>
+  </div>
+
+  <!-- 7. Application Review & Multi-State Decision Emails -->
+  <div class="card">
+    <div class="card-title">7. Application Review &amp; Decision</div>
+
+    <label class="checkbox-row">
+      <input type="checkbox" id="reviewEmailEnabled" onchange="toggleReviewPanel()" />
+      <span>Stage 1: Notify a specified reviewer on merge</span>
+    </label>
+
+    <div id="reviewPanel" class="hidden sub-box" style="margin-bottom: 8px;">
+      <label for="reviewEmailRecipient">Reviewer Email Address (or &lt;&lt;Column&gt;&gt;)</label>
+      <input type="text" id="reviewEmailRecipient" placeholder="e.g. reviewer@company.com" />
+
+      <label for="reviewEmailSubject">Review Subject Template</label>
+      <input type="text" id="reviewEmailSubject" placeholder="e.g. Application Review Requested: <<Name>>" />
+
+      <label for="reviewEmailBody">Review Body Template</label>
+      <textarea id="reviewEmailBody" placeholder="Hello,&#10;&#10;Please review the application for <<Name>>:&#10;<<Merged File URL>>"></textarea>
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="reviewAttachFile" checked />
+        <span>Attach merged PDF to reviewer email</span>
+      </label>
+    </div>
+
+    <label class="checkbox-row">
+      <input type="checkbox" id="decisionEmailEnabled" onchange="toggleDecisionPanel()" />
+      <span>Stage 2: Send decision emails when review column matches a state</span>
+    </label>
+
+    <div id="decisionPanel" class="hidden">
+      <label for="decisionColumn">Dedicated Review Decision Column</label>
+      <select id="decisionColumn"></select>
+
+      <label for="decisionRecipient">Applicant Recipient (Column or &lt;&lt;Tag&gt;&gt;)</label>
+      <input type="text" id="decisionRecipient" placeholder="e.g. Email or <<Email>>" />
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin: 8px 0 6px 0;">
+        <span style="font-size:12px; font-weight:600;">Decision States &amp; Email Templates</span>
+        <button type="button" class="small" onclick="addDecisionState()">+ Add State</button>
+      </div>
+      <div class="muted">
+        Add as many review states as needed (e.g. Accepted, Waitlisted, Interview, Rejected). Each state sends its own template once the column matches.
+      </div>
+      <div id="decisionStatesContainer"></div>
+    </div>
+  </div>
+
+  <!-- 8. Automation Trigger -->
+  <div class="card">
+    <div class="card-title">8. Automation Trigger</div>
+    <label for="triggerMode">Trigger Mode</label>
+    <div class="row-inline">
+      <select id="triggerMode">
+        <option value="NONE">None (Manual Only)</option>
+        <option value="ON_FORM_SUBMIT">On Form Submit</option>
+        <option value="EVERY_15_MIN">Every 15 Minutes</option>
+      </select>
+      <button id="btnApplyTrigger" type="button" onclick="applyTrigger()">Apply Trigger</button>
+    </div>
+  </div>
+
+  <!-- 9. Actions -->
+  <div class="card">
+    <div class="card-title">9. Run &amp; Manage</div>
+    <label class="checkbox-row">
+      <input type="checkbox" id="forceRemerge" />
+      <span>Force re-merge / re-send already completed rows</span>
+    </label>
+
+    <div class="btn-grid">
+      <button id="btnSave" type="button" onclick="saveConfig()">Save Config</button>
+      <button id="btnRun" class="primary" type="button" onclick="runMerge()">Run Merge Now</button>
+    </div>
+    <button id="btnClear" class="danger btn-full" type="button" onclick="clearStatuses()">Clear Statuses</button>
+  </div>
+
+  <div id="statusBox" class="status-box hidden"></div>
+
+  <script>
+    var OPERATORS = [
+      { value: 'equals', label: 'equals' },
+      { value: 'not_equals', label: 'not equals' },
+      { value: 'contains', label: 'contains' },
+      { value: 'not_contains', label: 'not contains' },
+      { value: 'greater_than', label: 'greater than (>)' },
+      { value: 'less_than', label: 'less than (<)' },
+      { value: 'is_empty', label: 'is empty' },
+      { value: 'is_not_empty', label: 'is not empty' }
+    ];
+
+    var state = {
+      headers: [],
+      tags: [],
+      mappings: {},
+      branchRules: [],
+      decisionStates: []
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      loadContext();
+    });
+
+    function setBusy(busy, message) {
+      var buttons = document.querySelectorAll('button');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = busy;
+      }
+      if (message) {
+        showStatus(message, 'info');
+      }
+    }
+
+    function showStatus(msg, type) {
+      var box = document.getElementById('statusBox');
+      box.textContent = msg;
+      box.className = 'status-box status-' + (type || 'info');
+    }
+
+    function handleError(err) {
+      setBusy(false);
+      var msg = err && err.message ? err.message : String(err);
+      showStatus('Error: ' + msg, 'error');
+    }
+
+    function loadContext() {
+      setBusy(true, 'Loading spreadsheet context...');
+      google.script.run
+        .withSuccessHandler(function (ctx) {
+          setBusy(false);
+          populateSheetSelect(ctx.sheetNames, ctx.config.sheetName || ctx.activeSheetName);
+          state.headers = ctx.headers || [];
+          updateHeadersHint();
+
+          var cfg = ctx.config || {};
+          document.getElementById('templateDocId').value = cfg.templateDocId || '';
+          document.getElementById('destinationFolderId').value = cfg.destinationFolderId || '';
+          document.getElementById('filenamePattern').value = cfg.filenamePattern || '<<Name>> - Merged';
+          document.getElementById('outputFormat').value = cfg.outputFormat || 'PDF';
+
+          var cond = cfg.mergeCondition || {};
+          document.getElementById('condEnabled').checked = Boolean(cond.enabled);
+          populateColumnSelect(document.getElementById('condColumn'), cond.column || '');
+          document.getElementById('condOperator').value = cond.operator || 'equals';
+          document.getElementById('condValue').value = cond.value || '';
+          toggleConditionPanel();
+
+          state.branchRules = Array.isArray(cfg.branchRules) ? cfg.branchRules : [];
+          renderBranchRules();
+
+          document.getElementById('emailEnabled').checked = Boolean(cfg.emailEnabled);
+          document.getElementById('emailRecipient').value = cfg.emailRecipient || '';
+          document.getElementById('emailSubject').value = cfg.emailSubject || '';
+          document.getElementById('emailBody').value = cfg.emailBody || '';
+          toggleEmailPanel();
+
+          document.getElementById('reviewEmailEnabled').checked = Boolean(cfg.reviewEmailEnabled);
+          document.getElementById('reviewEmailRecipient').value = cfg.reviewEmailRecipient || '';
+          document.getElementById('reviewEmailSubject').value =
+            cfg.reviewEmailSubject || 'Application Review Requested: <<Name>>';
+          document.getElementById('reviewEmailBody').value =
+            cfg.reviewEmailBody ||
+            'Hello,\n\nA new application has been merged for your review.\n\nDocument Link: <<Merged File URL>>';
+          document.getElementById('reviewAttachFile').checked =
+            cfg.reviewAttachFile !== undefined ? Boolean(cfg.reviewAttachFile) : true;
+          toggleReviewPanel();
+
+          document.getElementById('decisionEmailEnabled').checked = Boolean(cfg.decisionEmailEnabled);
+          populateColumnSelect(document.getElementById('decisionColumn'), cfg.decisionColumn || '');
+          document.getElementById('decisionRecipient').value = cfg.decisionRecipient || '';
+
+          if (Array.isArray(cfg.decisionStates) && cfg.decisionStates.length > 0) {
+            state.decisionStates = cfg.decisionStates;
+          } else {
+            state.decisionStates = [
+              {
+                name: 'Accepted',
+                triggerValues: cfg.decisionAcceptedValue || 'Accepted',
+                subject:
+                  cfg.decisionAcceptedSubject || 'Congratulations! Your application has been accepted',
+                body:
+                  cfg.decisionAcceptedBody ||
+                  'Hello <<Name>>,\n\nWe are pleased to inform you that your application has been accepted.\n\nReference Document: <<Merged File URL>>',
+                attachFile: false
+              },
+              {
+                name: 'Waitlisted',
+                triggerValues: 'Waitlisted, On Hold',
+                subject: 'Application Status Update: Waitlisted',
+                body:
+                  'Hello <<Name>>,\n\nYour application has been placed on our waitlist. We will notify you as soon as a spot becomes available.',
+                attachFile: false
+              },
+              {
+                name: 'Rejected / Regarded',
+                triggerValues: cfg.decisionRejectedValue || 'Rejected, Regarded',
+                subject: cfg.decisionRejectedSubject || 'Update regarding your application',
+                body:
+                  cfg.decisionRejectedBody ||
+                  'Hello <<Name>>,\n\nThank you for your application. After careful review, we are unable to move forward at this time.',
+                attachFile: false
+              }
+            ];
+          }
+          renderDecisionStates();
+          toggleDecisionPanel();
+
+          document.getElementById('triggerMode').value = cfg.triggerMode || 'NONE';
+          document.getElementById('forceRemerge').checked = Boolean(cfg.forceRemerge);
+
+          state.mappings = cfg.mappings || {};
+          state.tags = Object.keys(state.mappings);
+          renderMappings();
+
+          showStatus('Loaded "' + ctx.spreadsheetName + '".', 'success');
+        })
+        .withFailureHandler(handleError)
+        .apiGetSpreadsheetContext();
+    }
+
+    function populateSheetSelect(sheetNames, selectedName) {
+      var sel = document.getElementById('sheetSelect');
+      sel.innerHTML = '';
+      for (var i = 0; i < sheetNames.length; i++) {
+        var opt = document.createElement('option');
+        opt.value = sheetNames[i];
+        opt.textContent = sheetNames[i];
+        if (sheetNames[i] === selectedName) opt.selected = true;
+        sel.appendChild(opt);
+      }
+    }
+
+    function populateColumnSelect(selectEl, selectedVal) {
+      selectEl.innerHTML = '';
+      var emptyOpt = document.createElement('option');
+      emptyOpt.value = '';
+      emptyOpt.textContent = '-- Column --';
+      selectEl.appendChild(emptyOpt);
+
+      for (var i = 0; i < state.headers.length; i++) {
+        var h = state.headers[i];
+        var opt = document.createElement('option');
+        opt.value = h;
+        opt.textContent = h;
+        if (h === selectedVal) opt.selected = true;
+        selectEl.appendChild(opt);
+      }
+    }
+
+    function updateHeadersHint() {
+      var el = document.getElementById('headersHint');
+      el.textContent =
+        state.headers.length > 0
+          ? 'Detected ' + state.headers.length + ' columns: ' + state.headers.join(', ')
+          : 'No Row 1 headers found on this tab.';
+    }
+
+    function onSheetChange() {
+      var sheetName = document.getElementById('sheetSelect').value;
+      setBusy(true, 'Loading headers for "' + sheetName + '"...');
+      google.script.run
+        .withSuccessHandler(function (headers) {
+          setBusy(false);
+          state.headers = headers || [];
+          updateHeadersHint();
+          populateColumnSelect(
+            document.getElementById('condColumn'),
+            document.getElementById('condColumn').value
+          );
+          populateColumnSelect(
+            document.getElementById('decisionColumn'),
+            document.getElementById('decisionColumn').value
+          );
+          renderMappings();
+          renderBranchRules();
+          showStatus('Updated columns for "' + sheetName + '".', 'info');
+        })
+        .withFailureHandler(handleError)
+        .apiGetSheetHeaders(sheetName);
+    }
+
+    function scanTags() {
+      var docId = document.getElementById('templateDocId').value.trim();
+      if (!docId) {
+        showStatus('Please enter a Template Doc ID or URL first.', 'error');
+        return;
+      }
+      setBusy(true, 'Scanning template for <<Tag>> placeholders...');
+      google.script.run
+        .withSuccessHandler(function (res) {
+          setBusy(false);
+          document.getElementById('templateDocId').value = res.docId;
+          state.tags = res.tags || [];
+          document.getElementById('templateInfo').textContent =
+            'Template: "' + res.docTitle + '" (' + state.tags.length + ' tags found)';
+          renderMappings();
+          showStatus('Scanned ' + state.tags.length + ' tag(s) from "' + res.docTitle + '".', 'success');
+        })
+        .withFailureHandler(handleError)
+        .apiGetTemplateTags(docId);
+    }
+
+    function renderMappings() {
+      var container = document.getElementById('mappingsContainer');
+      container.innerHTML = '';
+
+      if (!state.tags || state.tags.length === 0) {
+        container.innerHTML =
+          '<div class="muted">No tags loaded. Click "Scan Tags" to extract &lt;&lt;Tag&gt;&gt; placeholders.</div>';
+        return;
+      }
+
+      for (var i = 0; i < state.tags.length; i++) {
+        var tag = state.tags[i];
+        var row = document.createElement('div');
+        row.className = 'mapping-row';
+
+        var pill = document.createElement('div');
+        pill.className = 'tag-pill';
+        pill.title = '<<' + tag + '>>';
+        pill.textContent = '<<' + tag + '>>';
+
+        var select = document.createElement('select');
+        select.setAttribute('data-tag', tag);
+
+        var emptyOpt = document.createElement('option');
+        emptyOpt.value = '';
+        emptyOpt.textContent = '-- Select Column --';
+        select.appendChild(emptyOpt);
+
+        var currentVal = state.mappings[tag] || autoMatchHeader(tag, state.headers);
+        for (var j = 0; j < state.headers.length; j++) {
+          var h = state.headers[j];
+          var opt = document.createElement('option');
+          opt.value = h;
+          opt.textContent = h;
+          if (h === currentVal) opt.selected = true;
+          select.appendChild(opt);
+        }
+
+        row.appendChild(pill);
+        row.appendChild(select);
+        container.appendChild(row);
+      }
+    }
+
+    function autoMatchHeader(tag, headers) {
+      var lowerTag = String(tag).trim().toLowerCase();
+      for (var i = 0; i < headers.length; i++) {
+        if (String(headers[i]).trim().toLowerCase() === lowerTag) {
+          return headers[i];
+        }
+      }
+      return '';
+    }
+
+    function addBranchRule() {
+      collectBranchRulesFromUI();
+      state.branchRules.push({
+        name: 'Branch ' + (state.branchRules.length + 1),
+        column: state.headers[0] || '',
+        operator: 'equals',
+        value: '',
+        templateDocId: '',
+        destinationFolderId: '',
+        emailRecipient: '',
+        emailSubject: '',
+        emailBody: ''
+      });
+      renderBranchRules();
+    }
+
+    function removeBranchRule(index) {
+      collectBranchRulesFromUI();
+      state.branchRules.splice(index, 1);
+      renderBranchRules();
+    }
+
+    function renderBranchRules() {
+      var container = document.getElementById('branchesContainer');
+      container.innerHTML = '';
+
+      if (!state.branchRules || state.branchRules.length === 0) {
+        container.innerHTML = '<div class="muted">No branching rules configured.</div>';
+        return;
+      }
+
+      for (var i = 0; i < state.branchRules.length; i++) {
+        var rule = state.branchRules[i];
+        var card = document.createElement('div');
+        card.className = 'branch-card';
+        card.setAttribute('data-branch-index', i);
+
+        var header = document.createElement('div');
+        header.className = 'branch-header';
+
+        var nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'br-name';
+        nameInput.placeholder = 'Branch name (e.g. Track A)';
+        nameInput.value = rule.name || '';
+
+        var removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'danger small';
+        removeBtn.textContent = 'Remove';
+        removeBtn.setAttribute('onclick', 'removeBranchRule(' + i + ')');
+
+        header.appendChild(nameInput);
+        header.appendChild(removeBtn);
+        card.appendChild(header);
+
+        var condGrid = document.createElement('div');
+        condGrid.className = 'cond-grid';
+
+        var colSel = document.createElement('select');
+        colSel.className = 'br-column';
+        populateColumnSelect(colSel, rule.column || '');
+
+        var opSel = document.createElement('select');
+        opSel.className = 'br-operator';
+        for (var o = 0; o < OPERATORS.length; o++) {
+          var opOpt = document.createElement('option');
+          opOpt.value = OPERATORS[o].value;
+          opOpt.textContent = OPERATORS[o].label;
+          if (OPERATORS[o].value === (rule.operator || 'equals')) opOpt.selected = true;
+          opSel.appendChild(opOpt);
+        }
+
+        condGrid.appendChild(colSel);
+        condGrid.appendChild(opSel);
+        card.appendChild(condGrid);
+
+        var valInput = document.createElement('input');
+        valInput.type = 'text';
+        valInput.className = 'br-value';
+        valInput.placeholder = 'Match value';
+        valInput.value = rule.value || '';
+        card.appendChild(valInput);
+
+        var tplInput = document.createElement('input');
+        tplInput.type = 'text';
+        tplInput.className = 'br-template';
+        tplInput.placeholder = 'Override Template Doc ID/URL (optional)';
+        tplInput.value = rule.templateDocId || '';
+        card.appendChild(tplInput);
+
+        var fldInput = document.createElement('input');
+        fldInput.type = 'text';
+        fldInput.className = 'br-folder';
+        fldInput.placeholder = 'Override Folder ID/URL (optional)';
+        fldInput.value = rule.destinationFolderId || '';
+        card.appendChild(fldInput);
+
+        var recInput = document.createElement('input');
+        recInput.type = 'text';
+        recInput.className = 'br-recipient';
+        recInput.placeholder = 'Override Email Recipient (optional)';
+        recInput.value = rule.emailRecipient || '';
+        card.appendChild(recInput);
+
+        var subjInput = document.createElement('input');
+        subjInput.type = 'text';
+        subjInput.className = 'br-subject';
+        subjInput.placeholder = 'Branch Email Subject Template (optional)';
+        subjInput.value = rule.emailSubject || '';
+        card.appendChild(subjInput);
+
+        var bodyArea = document.createElement('textarea');
+        bodyArea.className = 'br-body';
+        bodyArea.placeholder = 'Branch Email Body Template (optional)';
+        bodyArea.value = rule.emailBody || '';
+        card.appendChild(bodyArea);
+
+        container.appendChild(card);
+      }
+    }
+
+    function collectBranchRulesFromUI() {
+      var cards = document.querySelectorAll('#branchesContainer .branch-card');
+      var rules = [];
+      for (var i = 0; i < cards.length; i++) {
+        var c = cards[i];
+        rules.push({
+          name: c.querySelector('.br-name').value.trim(),
+          column: c.querySelector('.br-column').value,
+          operator: c.querySelector('.br-operator').value,
+          value: c.querySelector('.br-value').value.trim(),
+          templateDocId: c.querySelector('.br-template').value.trim(),
+          destinationFolderId: c.querySelector('.br-folder').value.trim(),
+          emailRecipient: c.querySelector('.br-recipient').value.trim(),
+          emailSubject: c.querySelector('.br-subject').value.trim(),
+          emailBody: c.querySelector('.br-body').value
+        });
+      }
+      state.branchRules = rules;
+      return rules;
+    }
+
+    function collectMappingsFromUI() {
+      var selects = document.querySelectorAll('#mappingsContainer select[data-tag]');
+      var mappings = {};
+      for (var i = 0; i < selects.length; i++) {
+        var tag = selects[i].getAttribute('data-tag');
+        var col = selects[i].value;
+        if (tag && col) {
+          mappings[tag] = col;
+        }
+      }
+      state.mappings = mappings;
+      return mappings;
+    }
+
+    function toggleConditionPanel() {
+      var enabled = document.getElementById('condEnabled').checked;
+      document.getElementById('conditionPanel').classList.toggle('hidden', !enabled);
+    }
+
+    function toggleEmailPanel() {
+      var enabled = document.getElementById('emailEnabled').checked;
+      document.getElementById('emailPanel').classList.toggle('hidden', !enabled);
+    }
+
+    function toggleReviewPanel() {
+      var enabled = document.getElementById('reviewEmailEnabled').checked;
+      document.getElementById('reviewPanel').classList.toggle('hidden', !enabled);
+    }
+
+    function toggleDecisionPanel() {
+      var enabled = document.getElementById('decisionEmailEnabled').checked;
+      document.getElementById('decisionPanel').classList.toggle('hidden', !enabled);
+    }
+
+    function addDecisionState() {
+      collectDecisionStatesFromUI();
+      state.decisionStates.push({
+        name: 'State ' + (state.decisionStates.length + 1),
+        triggerValues: '',
+        subject: 'Application Status Update: <<Name>>',
+        body: 'Hello <<Name>>,\n\nYour application status has been updated.',
+        attachFile: false
+      });
+      renderDecisionStates();
+    }
+
+    function removeDecisionState(index) {
+      collectDecisionStatesFromUI();
+      state.decisionStates.splice(index, 1);
+      renderDecisionStates();
+    }
+
+    function renderDecisionStates() {
+      var container = document.getElementById('decisionStatesContainer');
+      container.innerHTML = '';
+
+      if (!state.decisionStates || state.decisionStates.length === 0) {
+        container.innerHTML =
+          '<div class="muted">No decision states defined. Click "+ Add State" above.</div>';
+        return;
+      }
+
+      for (var i = 0; i < state.decisionStates.length; i++) {
+        var st = state.decisionStates[i];
+        var box = document.createElement('div');
+        box.className = 'sub-box';
+        box.setAttribute('data-decision-index', i);
+
+        var header = document.createElement('div');
+        header.className = 'branch-header';
+
+        var nameInput = document.createElement('input');
+        nameInput.type = 'text';
+        nameInput.className = 'ds-name';
+        nameInput.placeholder = 'State Label (e.g. Accepted, Waitlisted)';
+        nameInput.value = st.name || '';
+
+        var removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'danger small';
+        removeBtn.textContent = 'Remove';
+        removeBtn.setAttribute('onclick', 'removeDecisionState(' + i + ')');
+
+        header.appendChild(nameInput);
+        header.appendChild(removeBtn);
+        box.appendChild(header);
+
+        var trigLabel = document.createElement('label');
+        trigLabel.textContent = 'Trigger Value(s) in Review Column (comma-separated)';
+        box.appendChild(trigLabel);
+
+        var trigInput = document.createElement('input');
+        trigInput.type = 'text';
+        trigInput.className = 'ds-triggers';
+        trigInput.placeholder = 'e.g. Accepted, Approved';
+        trigInput.value = st.triggerValues || '';
+        box.appendChild(trigInput);
+
+        var subjLabel = document.createElement('label');
+        subjLabel.textContent = 'Email Subject Template';
+        box.appendChild(subjLabel);
+
+        var subjInput = document.createElement('input');
+        subjInput.type = 'text';
+        subjInput.className = 'ds-subject';
+        subjInput.placeholder = 'Email Subject';
+        subjInput.value = st.subject || '';
+        box.appendChild(subjInput);
+
+        var bodyLabel = document.createElement('label');
+        bodyLabel.textContent = 'Email Body Template';
+        box.appendChild(bodyLabel);
+
+        var bodyArea = document.createElement('textarea');
+        bodyArea.className = 'ds-body';
+        bodyArea.placeholder = 'Email Body (supports <<Column>> and <<Merged File URL>>)';
+        bodyArea.value = st.body || '';
+        box.appendChild(bodyArea);
+
+        var attachRow = document.createElement('label');
+        attachRow.className = 'checkbox-row';
+        var attachChk = document.createElement('input');
+        attachChk.type = 'checkbox';
+        attachChk.className = 'ds-attach';
+        attachChk.checked = Boolean(st.attachFile);
+        var attachSpan = document.createElement('span');
+        attachSpan.textContent = 'Attach merged file (if available)';
+        attachRow.appendChild(attachChk);
+        attachRow.appendChild(attachSpan);
+        box.appendChild(attachRow);
+
+        container.appendChild(box);
+      }
+    }
+
+    function collectDecisionStatesFromUI() {
+      var boxes = document.querySelectorAll('#decisionStatesContainer .sub-box');
+      var states = [];
+      for (var i = 0; i < boxes.length; i++) {
+        var b = boxes[i];
+        states.push({
+          name: b.querySelector('.ds-name').value.trim(),
+          triggerValues: b.querySelector('.ds-triggers').value.trim(),
+          subject: b.querySelector('.ds-subject').value.trim(),
+          body: b.querySelector('.ds-body').value,
+          attachFile: b.querySelector('.ds-attach').checked
+        });
+      }
+      state.decisionStates = states;
+      return states;
+    }
+
+    function collectConfigFromUI() {
+      return {
+        sheetName: document.getElementById('sheetSelect').value,
+        templateDocId: document.getElementById('templateDocId').value.trim(),
+        destinationFolderId: document.getElementById('destinationFolderId').value.trim(),
+        mappings: collectMappingsFromUI(),
+        filenamePattern: document.getElementById('filenamePattern').value.trim(),
+        outputFormat: document.getElementById('outputFormat').value,
+        mergeCondition: {
+          enabled: document.getElementById('condEnabled').checked,
+          column: document.getElementById('condColumn').value,
+          operator: document.getElementById('condOperator').value,
+          value: document.getElementById('condValue').value.trim()
+        },
+        branchRules: collectBranchRulesFromUI(),
+        emailEnabled: document.getElementById('emailEnabled').checked,
+        emailRecipient: document.getElementById('emailRecipient').value.trim(),
+        emailSubject: document.getElementById('emailSubject').value.trim(),
+        emailBody: document.getElementById('emailBody').value,
+        reviewEmailEnabled: document.getElementById('reviewEmailEnabled').checked,
+        reviewEmailRecipient: document.getElementById('reviewEmailRecipient').value.trim(),
+        reviewEmailSubject: document.getElementById('reviewEmailSubject').value.trim(),
+        reviewEmailBody: document.getElementById('reviewEmailBody').value,
+        reviewAttachFile: document.getElementById('reviewAttachFile').checked,
+        decisionEmailEnabled: document.getElementById('decisionEmailEnabled').checked,
+        decisionColumn: document.getElementById('decisionColumn').value,
+        decisionRecipient: document.getElementById('decisionRecipient').value.trim(),
+        decisionStates: collectDecisionStatesFromUI(),
+        triggerMode: document.getElementById('triggerMode').value,
+        forceRemerge: document.getElementById('forceRemerge').checked
+      };
+    }
+
+    function saveConfig(callback) {
+      var cfg = collectConfigFromUI();
+      setBusy(true, 'Saving configuration...');
+      google.script.run
+        .withSuccessHandler(function (res) {
+          setBusy(false);
+          document.getElementById('templateDocId').value = res.config.templateDocId;
+          document.getElementById('destinationFolderId').value = res.config.destinationFolderId;
+          showStatus('Configuration saved for "' + res.config.sheetName + '".', 'success');
+          if (typeof callback === 'function') callback();
+        })
+        .withFailureHandler(handleError)
+        .apiSaveConfig(cfg);
+    }
+
+    function runMerge() {
+      var force = document.getElementById('forceRemerge').checked;
+      saveConfig(function () {
+        setBusy(true, 'Running merge... Please wait.');
+        google.script.run
+          .withSuccessHandler(function (res) {
+            setBusy(false);
+            var msg = res.message;
+            if (res.errorDetails && res.errorDetails.length > 0) {
+              msg += ' Details: ' + res.errorDetails.join(' | ');
+              showStatus(msg, 'error');
+            } else {
+              showStatus(msg, 'success');
+            }
+          })
+          .withFailureHandler(handleError)
+          .apiRunMerge({ forceRemerge: force });
+      });
+    }
+
+    function applyTrigger() {
+      var mode = document.getElementById('triggerMode').value;
+      setBusy(true, 'Updating trigger...');
+      google.script.run
+        .withSuccessHandler(function (res) {
+          setBusy(false);
+          showStatus(res.message, 'success');
+        })
+        .withFailureHandler(handleError)
+        .apiConfigureTrigger(mode);
+    }
+
+    function clearStatuses() {
+      setBusy(true, 'Clearing merge status columns...');
+      google.script.run
+        .withSuccessHandler(function (res) {
+          setBusy(false);
+          showStatus(res.message, 'success');
+        })
+        .withFailureHandler(handleError)
+        .apiClearStatuses();
+    }
+  </script>
+</body>
+</html>
